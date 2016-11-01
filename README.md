@@ -9,4 +9,5 @@ php composer-setup.php
 php -r "unlink('composer-setup.php');"
 
 2) Install slim
+
 php composer.phar require slim/slim "^3.0"
