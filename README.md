@@ -1,7 +1,7 @@
 # Pusici :heart:
 
 ## Installation
-1. Install Composer from https://getcomposer.org/download/ by running commands
+1. Install Composer from [getcomposer.org/download/](https://getcomposer.org/download/) by running commands
 
   ```
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -9,6 +9,7 @@ php -r "if (hash_file('SHA384', 'composer-setup.php') === 'e115a8dc7871f15d85314
 php composer-setup.php
 php -r "unlink('composer-setup.php');"
   ```
+
 2. Install php Slim framework by runing command
 
   ```
