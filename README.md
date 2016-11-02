@@ -1,6 +1,7 @@
 # Pusici :heart:
 
 ## Installation
+
 1. Install Composer from [getcomposer.org/download/](https://getcomposer.org/download/) by running commands
 
   ```
@@ -17,4 +18,5 @@ php composer.phar require slim/slim "^3.0"
   ```
 
 ## Links
+
 - [Slim framework](http://www.slimframework.com/)
