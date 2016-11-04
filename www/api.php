@@ -17,3 +17,6 @@ $app->get('/hello/{name}', function (Request $request, Response $response) {
 });
 
 $app->run();
+
+https://www.youtube.com/watch?v=RhcQXFeor9g
+http://insiderclub.org/
