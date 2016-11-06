@@ -17,6 +17,16 @@ php -r "unlink('composer-setup.php');"
 php composer.phar require slim/slim "^3.0"
   ```
 
+## Composer commands
+```
+php composer.phar
+php composer.phar -h
+php composer.phar install
+php composer.phar update
+// Dumps the autoloader - run each time the composer.json autoload section is changed
+php composer.phar dump-autoload -o
+```
+
 ## Links
 
 - [Slim framework](http://www.slimframework.com/)
