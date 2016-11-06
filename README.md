@@ -1,4 +1,4 @@
-# Pusici :heart:
+# Pusíci :heart:
 
 ## Installation
 
@@ -17,7 +17,14 @@ php -r "unlink('composer-setup.php');"
 php composer.phar require slim/slim "^3.0"
   ```
 
+3. Install php Illuminate database
+
+  ```
+php composer.phar require illuminate/database
+  ```
+
 ## Composer commands
+
 ```
 php composer.phar
 php composer.phar -h
