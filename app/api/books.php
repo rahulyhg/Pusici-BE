@@ -13,8 +13,8 @@ $app->get('/api/books', function () {
 
     if (isset($data))
     {
-        header('Content-Type: application/json'); // prevent data caching
-        return json_encode($data);
+        header('Content-Type: application/json; charset=UTF-8'); // prevent data caching
+        return json_encode($data, JSON_UNESCAPED_UNICODE);
     }
 });
 
@@ -22,12 +22,13 @@ $app->get('/api/books/{id}', function ($request) {
     require_once('db_connect.php');
     
     $id = $request->getAttribute('id');
-    $query = "SELECT * FROM books WHERE id=$id";
+    $query = "SELECT * FROM books WHERE id='$id'";
     $result = $mysqli->query($query);
+
     $data[] = $result->fetch_assoc();
 
-    header('Content-Type: application/json');
-    return json_encode($data);
+    header('Content-Type: application/json; charset=UTF-8');
+    return json_encode($data, JSON_UNESCAPED_UNICODE);
 });
 
 $app->post('/api/books', function ($request) {
