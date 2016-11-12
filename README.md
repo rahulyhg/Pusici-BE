@@ -37,3 +37,5 @@ php composer.phar dump-autoload -o
 ## Links
 
 - [Slim framework](http://www.slimframework.com/)
+- [Illuminate database docs](https://laravel.com/docs/5.3/database)
+- [Illuminate database API](https://laravel.com/api/5.3/Illuminate/Database.html)
