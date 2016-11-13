@@ -4,7 +4,10 @@ require '../app/bootstrap.php';
 
 $app->run();
 
-/*
-https://www.youtube.com/watch?v=RhcQXFeor9g
-http://insiderclub.org/
-*/
+/**
+ * Respect Validation tutorial
+ * https://www.sitepoint.com/validating-your-data-with-respect-validation/
+ * Illuminate database tutorial
+ * https://scotch.io/tutorials/a-guide-to-using-eloquent-orm-in-laravel
+ *
+ */

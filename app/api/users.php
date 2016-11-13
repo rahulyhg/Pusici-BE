@@ -1,57 +1,94 @@
 <?php
 
-//use Illuminate\Support\Facades\DB;
+use App\Helpers\Generator;
 use App\Models\User;
-use App\Models\Book;
 
-$app->get('/api/users', function () {
+$app->get('/api/users', function ($request, $response) { // TODO implement query attributes (where, order_by, ...)
 
-    // https://laravel.com/docs/5.3/database
-    // https://www.youtube.com/watch?v=m5Jmh9JKnyQ
-    // https://www.youtube.com/watch?v=lEZ8cnVGVZE
-    // 
-    //$users = User::all();
-    //$users = DB::select('select * from users where id = ?', ['344c0ffac81941df9c7949c026e7ac44']);
-    
-    var_dump($users);
-    exit;
-    
-    header('Content-Type: application/json'); // prevent data caching
-    return $users->toJson(JSON_UNESCAPED_UNICODE);
+    $users = User::all();
+
+    return $response->withJson($users, 200, JSON_UNESCAPED_UNICODE);
 });
 
-$app->get('/api/users/{id}', function ($request) {
+$app->get('/api/users/{id}', function ($request, $response) {
 
     $id = $request->getAttribute('id');
-    $user = User::where('id', $id)->first();
-    
-    var_dump($user);
-    echo '<br>';
-    echo '<br>';
-    var_dump($user->toJson(JSON_UNESCAPED_UNICODE));
-    exit;
+    $user = User::find($id);
+
+    if (!isset($user))
+    {
+        $data = array('user' => "User with id '$id' not found.");
+        return $response->withJson($data, 404, JSON_UNESCAPED_UNICODE);
+    }
+
+    return $response->withJson($user, 200, JSON_UNESCAPED_UNICODE);
+});
+
+$app->post('/api/users', function ($request, $response) {
+
+    $user = new User;
+
+    $user->id = Generator::guid(false);
+    $user->first_name = $request->getParsedBodyParam('first_name');
+    $user->last_name = $request->getParsedBodyParam('last_name');
+    $user->email = $request->getParsedBodyParam('email');
+    $user->password = $request->getParsedBodyParam('password');
+
+    if ($user->isValid())
+    {
+        $user->save();
+    }
+    else
+    {
+        return $response->withJson($user->errors, 400, JSON_UNESCAPED_UNICODE);
+    }
+
+    $data = array('id' => $user->id);
+    return $response->withJson($data, 201, JSON_UNESCAPED_UNICODE);
+});
+
+$app->put('/api/users/{id}', function ($request, $response) {
+
+    $id = $request->getAttribute('id');
+    $user = User::where('id', '=', "$id")->first();
 
     if (isset($user))
     {
-        header('Content-Type: application/json');
-        return $user->toJson();
+        $user->first_name = $request->getParsedBodyParam('first_name');
+        $user->last_name = $request->getParsedBodyParam('last_name');
+        $user->email = $request->getParsedBodyParam('email');
+        $user->password = $request->getParsedBodyParam('password');
+        
+        if ($user->isValid())
+        {
+            $user->save();
+        }
+        else
+        {
+            return $response->withJson($user->errors, 400, JSON_UNESCAPED_UNICODE);
+        }
     }
+    else
+    {
+        $data = array('user' => "User with id '$id' not found.");
+        return $response->withJson($data, 404, JSON_UNESCAPED_UNICODE);
+    }
+
+    return $response->withJson(null, 204);
 });
 
+$app->delete('/api/users/{id}', function ($request, $response) {
 
-//$user = User::find('6d0fa2fed83d408b9293d77128ceeb9a');
-//$user = User::where('email', 'libor.drapal@email.cz')->first();
+    $id = $request->getAttribute('id');
+    $user = User::find($id);
 
-$app->post('/api/users', function () {
-    
-//    var_dump(com_create_guid());
-// insert into users values(unhex(replace(uuid(),'-','')), 'Andromeda');
-    
-    User::create([
-        'id' => com_create_guid(),
-        'first_name' => 'Albus',
-        'last_name' => 'Dumbledore',
-        'email' => 'albus.dumbledore@email.cz',
-        'password' => '1234',
-    ]);
+    if (!isset($user))
+    {
+        $data = array('user' => "User with id '$id' not found.");
+        return $response->withJson($data, 404, JSON_UNESCAPED_UNICODE);
+    }
+
+    $user->delete();
+
+    return $response->withJson(null, 204);
 });

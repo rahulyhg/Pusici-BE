@@ -1,7 +1,8 @@
 {
     "require": {
         "slim/slim": "^3.0",
-        "illuminate/database": "^5.3"
+        "illuminate/database": "^5.3",
+        "respect/validation": "^1.1"
     },
     "autoload": {
         "psr-4": {

@@ -1,5 +1,18 @@
 <?php
 
+/**
+ * TUTORIAL
+ * REST Books endpoints
+ *
+ * - get all books
+ * - get particular book according to its id
+ * - create new book
+ * - update book
+ * - delete book
+ * - these endpoints use "old school" database connection db_connect.php
+ *
+ */
+
 $app->get('/api/books', function () {
     require_once('db_connect.php');
 

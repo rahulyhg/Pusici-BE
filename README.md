@@ -11,7 +11,7 @@ php composer-setup.php
 php -r "unlink('composer-setup.php');"
   ```
 
-2. Install php Slim framework by runing command
+2. Install php Slim framework
 
   ```
 php composer.phar require slim/slim "^3.0"
@@ -21,6 +21,12 @@ php composer.phar require slim/slim "^3.0"
 
   ```
 php composer.phar require illuminate/database
+  ```
+
+4. Install php Respect validation
+
+  ```
+php composer.phar require respect/validation
   ```
 
 ## Composer commands
@@ -39,3 +45,5 @@ php composer.phar dump-autoload -o
 - [Slim framework](http://www.slimframework.com/)
 - [Illuminate database docs](https://laravel.com/docs/5.3/database)
 - [Illuminate database API](https://laravel.com/api/5.3/Illuminate/Database.html)
+- [Respect validation](https://github.com/Respect/Validation)
+- [HTTP status codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)

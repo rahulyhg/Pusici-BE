@@ -31,5 +31,4 @@ $container['db'] = function ($container) use ($capsule) {
 };
 
 // require endpoints
-require_once('api/books.php');
 require_once('api/users.php');
