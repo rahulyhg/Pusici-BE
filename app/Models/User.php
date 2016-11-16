@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Validators\UserValidator;
+use App\Validation\UserValidator;
 use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
