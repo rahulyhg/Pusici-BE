@@ -3,26 +3,22 @@
 namespace App\Models;
 
 use App\Validation\UserValidator;
-use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class User extends ModelValidation
 {
+    public $incrementing = false; // disable auto-incrementing of primary key (id is not integer type)
+
     protected $table = 'users'; // link model to db table explicitly
     protected $primaryKey = 'id';
-    protected $fillable = ['id', 'first_name', 'last_name', 'email', 'password'];
+    protected $fillable = ['first_name', 'last_name', 'email'];
 
-    public $incrementing = false; // disable auto-incrementing of primary key (id is not integer type)
-    public $errors = [];
-
-    public function isValid()
+    public function __construct($attributes = array())
     {
-        $userValidator = new UserValidator();
-        $isValid = $userValidator->validate($this->attributes);
+        parent::__construct(new UserValidator(), $attributes);
+    }
 
-        if (!$isValid) {
-            $this->errors = $userValidator->errors();
-        }
-
-        return $isValid;
+    // Define relationship
+    public function token() {
+        return $this->hasOne('App\Models\Token'); // this matches the Eloquent model
     }
 }

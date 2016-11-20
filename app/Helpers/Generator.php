@@ -4,7 +4,7 @@ namespace App\Helpers;
 
 class Generator
 {
-    
+
     static function uuid($hyphens = true) {
         $uuid = ($hyphens == true) ? '%04x%04x-%04x-%04x-%04x-%04x%04x%04x' : '%04x%04x%04x%04x%04x%04x%04x%04x';
         

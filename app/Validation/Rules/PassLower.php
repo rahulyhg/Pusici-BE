@@ -5,6 +5,9 @@ namespace App\Validation\Rules;
 use Respect\Validation\Rules\AbstractRule;
 use Respect\Validation\Validator as V;
 
+/**
+ * Verifies quantity of lower-case letters in input
+ */
 class PassLower extends AbstractRule
 {
     public $quantity;

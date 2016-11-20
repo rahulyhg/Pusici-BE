@@ -5,6 +5,9 @@ namespace App\Validation\Rules;
 use Respect\Validation\Rules\AbstractRule;
 use Respect\Validation\Validator as V;
 
+/**
+ * Verifies quantity of digits in input
+ */
 class PassDigit extends AbstractRule
 {
     public $quantity;
