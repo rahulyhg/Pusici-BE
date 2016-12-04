@@ -44,10 +44,14 @@ php composer.phar install
 php composer.phar update
 // Dumps the autoloader - run each time the composer.json autoload section is changed
 php composer.phar dump-autoload -o
+// Lists all of the available packages
+php composer.phar show
 ```
 
 ## Links
 
+- [Composer home](https://getcomposer.org/)
+- [Composer CLI](https://getcomposer.org/doc/03-cli.md)
 - [Slim framework home](http://www.slimframework.com/)
 - [Illuminate database docs](https://laravel.com/docs/5.3/database)
 - [Illuminate database API](https://laravel.com/api/5.3/Illuminate/Database.html)
