@@ -1,13 +1,19 @@
 <?php
-
 namespace App\Helpers;
 
 class Generator
 {
 
-    static function uuid($hyphens = true) {
+    /**
+     * Universally unique identifier
+     *
+     * @param bool $hyphens
+     * @return string
+     */
+    static function uuid(bool $hyphens = true)
+    {
         $uuid = ($hyphens == true) ? '%04x%04x-%04x-%04x-%04x-%04x%04x%04x' : '%04x%04x%04x%04x%04x%04x%04x%04x';
-        
+
         return sprintf($uuid,
             // 32 bits for "time_low"
             mt_rand(0, 0xffff), mt_rand(0, 0xffff),
@@ -25,11 +31,16 @@ class Generator
             mt_rand(0, 0x3fff) | 0x8000,
 
             // 48 bits for "node"
-            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff)
-        );
+            mt_rand(0, 0xffff), mt_rand(0, 0xffff), mt_rand(0, 0xffff));
     }
 
-    static function guid($hyphens = true)
+    /**
+     * Globally unique identifier
+     *
+     * @param bool $hyphens
+     * @return string
+     */
+    static function guid(bool $hyphens = false)
     {
         return self::uuid($hyphens);
     }

@@ -2,7 +2,6 @@
 
 namespace App\Validation;
 
-use Respect\Validation\Exceptions\NestedValidationException;
 use Respect\Validation\Validator as V;
 
 class UserValidator extends ValidatorBase

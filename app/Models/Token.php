@@ -1,16 +1,24 @@
 <?php
-
 namespace App\Models;
 
 use App\Validation\TokenValidator;
 
 class Token extends ModelValidation
 {
+
     public $incrementing = false;
+
     public $timestamps = false;
 
     protected $table = 'tokens';
-    protected $fillable = ['password', 'access_token'];
+
+    protected $primaryKey = 'user_id';
+
+    protected $fillable = [
+        'password',
+        'refresh_token',
+        'expire'
+    ];
 
     public function __construct($attributes = array())
     {
@@ -18,7 +26,8 @@ class Token extends ModelValidation
     }
 
     // Define relationship
-    public function user() {
+    public function user()
+    {
         return $this->belongsTo('App\Models\User');
     }
 }

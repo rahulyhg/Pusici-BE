@@ -29,6 +29,12 @@ php composer.phar require illuminate/database
 php composer.phar require respect/validation
   ```
 
+5. Install php JSON Web Tokens (JWT) library
+
+  ```
+php composer.phar require firebase/php-jwt
+  ```
+
 ## Composer commands
 
 ```
@@ -42,8 +48,11 @@ php composer.phar dump-autoload -o
 
 ## Links
 
-- [Slim framework](http://www.slimframework.com/)
+- [Slim framework home](http://www.slimframework.com/)
 - [Illuminate database docs](https://laravel.com/docs/5.3/database)
 - [Illuminate database API](https://laravel.com/api/5.3/Illuminate/Database.html)
-- [Respect validation](https://github.com/Respect/Validation)
+- [ORM in Laravel tutorial](https://scotch.io/tutorials/a-guide-to-using-eloquent-orm-in-laravel)
+- [Respect Validation GitHub](https://github.com/Respect/Validation)
+- [Respect Validation tutorial](https://www.sitepoint.com/validating-your-data-with-respect-validation/)
+- [JWT tutorial](https://www.sitepoint.com/php-authorization-jwt-json-web-tokens/)
 - [HTTP status codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)

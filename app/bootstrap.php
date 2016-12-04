@@ -1,7 +1,9 @@
 <?php
-
 require '../vendor/autoload.php';
 
+$config = include ('config.php');
+
+// Configuration of Slim application
 $app = new \Slim\App([
     'settings' => [
         'displayErrorDetails' => true,
@@ -13,15 +15,15 @@ $app = new \Slim\App([
             'password' => '',
             'charset' => 'utf8',
             'collation' => 'utf8_unicode_ci',
-            'prefix' => '',
-        ],
-    ],
+            'prefix' => ''
+        ]
+    ]
 ]);
 
 $container = $app->getContainer();
 
 // initialize database
-$capsule = new \Illuminate\Database\Capsule\Manager;
+$capsule = new \Illuminate\Database\Capsule\Manager();
 $capsule->addConnection($container['settings']['db']);
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
@@ -31,4 +33,6 @@ $container['db'] = function ($container) use ($capsule) {
 };
 
 // require endpoints
-require_once('api/users.php');
+require_once ('api/users.php');
+require_once ('api/tokens.php');
+require_once ('api/playground.php');
