@@ -1,4 +1,7 @@
+.buildpath
+.project
 composer.lock
 composer.phar
 app/config.php
+.settings/*
 vendor/*
