@@ -1,7 +1,7 @@
 <?php
 require '../vendor/autoload.php';
 
-$config = include ('config.php');
+$config = require ('config.php');
 
 // Configuration of Slim application
 $app = new \Slim\App([

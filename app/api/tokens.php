@@ -1,5 +1,4 @@
 <?php
-use App\Models\Token;
 use App\Models\User;
 use Firebase\JWT\JWT;
 
@@ -30,7 +29,7 @@ $app->post('/api/tokens', function ($request, $response) {
 
     // Get request body parameters
     $email = $request->getParsedBodyParam('email');
-    $password = $request->getParsedBodyParam('password');
+    $password = md5($request->getParsedBodyParam('password'));
 
     try {
 
