@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Validation;
 
 use Respect\Validation\Validator as V;
@@ -20,6 +19,6 @@ class TokenValidator extends ValidatorBase
 
     public function initMessages()
     {
-        $this->messages = [ ];
+        $this->messages = [];
     }
 }

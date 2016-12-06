@@ -1,23 +1,25 @@
 <?php
-
 namespace App\Validation;
 
 use Respect\Validation\Exceptions\NestedValidationException;
 
 abstract class ValidatorBase
 {
+
     /**
      * List of constraints
      *
      * @var array
      */
     protected $rules = [];
+
     /**
      * List of customized messages
      *
      * @var array
      */
     protected $messages = [];
+
     /**
      * List of returned errors in case of a failing assertion
      *
@@ -37,33 +39,31 @@ abstract class ValidatorBase
      * @return void
      */
     abstract protected function initRules();
+
     /**
      * Set user custom error messages
      *
      * @return void
      */
     abstract protected function initMessages();
-    
+
     /**
      * Assert validation rules.
      *
      * @param array $inputs
-     *   The inputs to validate.
-     * @return boolean
-     *   True on success; otherwise, false.
+     *            The inputs to validate
+     * @return boolean True on success; otherwise, false
      */
     public function validate(array $inputs)
     {
         $result = true;
 
         foreach ($this->rules as $rule => $validator) {
-            try
-            {
+            try {
+                // array_get see Laravel Helper Functions (https://laravel.com/docs/5.3/helpers)
                 $validator->assert(array_get($inputs, $rule));
-            }
-            catch(NestedValidationException $exception)
-            {
-                //$newMessages[$rule] = $exception->findMessages($this->messages);
+            } catch (NestedValidationException $exception) {
+                // $newMessages[$rule] = $exception->findMessages($this->messages);
                 $newMessages[$rule] = $exception->getMessages();
                 $this->errors = array_merge($this->errors, $newMessages);
                 $result = false;

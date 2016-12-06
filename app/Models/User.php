@@ -1,8 +1,6 @@
 <?php
 namespace App\Models;
 
-use App\Validation\UserValidator;
-
 class User extends ModelValidation
 {
     // disable auto-incrementing of primary key (id is not an integer type)
@@ -17,11 +15,6 @@ class User extends ModelValidation
         'last_name',
         'email'
     ];
-
-    public function __construct($attributes = array())
-    {
-        parent::__construct(new UserValidator(), $attributes);
-    }
 
     // Define relationship
     public function token()

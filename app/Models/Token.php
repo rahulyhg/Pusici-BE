@@ -1,8 +1,6 @@
 <?php
 namespace App\Models;
 
-use App\Validation\TokenValidator;
-
 class Token extends ModelValidation
 {
 
@@ -11,7 +9,7 @@ class Token extends ModelValidation
     public $timestamps = false;
 
     protected $table = 'tokens';
-
+    // Explicitly overriding default value 'id'
     protected $primaryKey = 'user_id';
 
     protected $fillable = [
@@ -19,11 +17,6 @@ class Token extends ModelValidation
         'refresh_token',
         'expire'
     ];
-
-    public function __construct($attributes = array())
-    {
-        parent::__construct(new TokenValidator(), $attributes);
-    }
 
     // Define relationship
     public function user()
