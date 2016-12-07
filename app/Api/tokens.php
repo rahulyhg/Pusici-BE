@@ -1,9 +1,11 @@
 <?php
+namespace App\Api;
+
 use App\Models\User;
 use Firebase\JWT\JWT;
 
 /**
- * These endpoints are used to generate Access and Refresh tokens
+ * This endpoint is used to return Access and Refresh tokens for authenticated users
  *
  * Why to use POST method:
  * POST requests are never cached
@@ -21,15 +23,37 @@ use Firebase\JWT\JWT;
  */
 
 /**
- * Gets new Access Token for User based on login information
+ * Gets new Access Token for User
  */
 $app->post('/api/tokens', function ($request, $response) {
 
-    global $config;
+    // Get request body parameter
+    $grantType = $request->getParsedBodyParam('grant_type'); // password, refresh_token, ...
 
-    // Get request body parameters
-    $email = $request->getParsedBodyParam('email');
-    $password = md5($request->getParsedBodyParam('password'));
+    switch ($grantType) {
+        case 'password':
+            $email = $request->getParsedBodyParam('email');
+            $password = md5($request->getParsedBodyParam('password'));
+            return passwordGrantType($response, $email, $password);
+        case 'refresh_token':
+            $refreshToken = $request->getParsedBodyParam('refresh_token');
+            return refreshTokenGrantType($response, $refreshToken);
+        default:
+            return code_400($response, 'unsupported_grant_type');
+    }
+});
+
+/**
+ * Gets new Access Token for User based on credentials
+ *
+ * @param response $response
+ * @param string $email
+ * @param string $password
+ * @return response
+ */
+function passwordGrantType($response, $email, $password)
+{
+    global $config;
 
     try {
 
@@ -51,24 +75,75 @@ $app->post('/api/tokens', function ($request, $response) {
                 $user->token->expire = date('Y-m-d H:i:s', $token->expire + $config->jwt->expire);
                 $user->token->save();
 
-                return $response->withJson($data, 200);
+                return code_200($response, $data);
             }
         }
-    } catch (PDOException $e) {
-        $data = array(
-            'error' => 'internal_server_error',
-            'error_description' => utf8_encode($e->getMessage())
-        );
-        return $response->withjson($data, 500);
+    } catch (\PDOException $e) {
+        return code_500($response, utf8_encode($e->getMessage()));
     }
 
-    // 400 Bad Request
-    $data = array(
-        'error' => 'invalid_grant',
-        'error_description' => 'Credentials are invalid.'
-    );
+    return code_400($response, 'invalid_grant', 'Credentials are invalid.');
+}
+
+/**
+ * Returns error data
+ */
+function errorData(string $error, string $errorDescription)
+{
+    $data['error'] = $error;
+    if ($errorDescription != '')
+        $data['error_description'] = $errorDescription;
+    return $data;
+}
+
+/**
+ * 200 OK
+ */
+function code_200($response, $data)
+{
+    return $response->withJson($data, 200);
+}
+
+/**
+ * 400 Bad Request
+ */
+function code_400($response, $error, $errorDescription = '')
+{
+    $data = errorData($error, $errorDescription);
     return $response->withJson($data, 400);
-});
+}
+
+/**
+ * 500 Internal Server Error
+ */
+function code_500($response, $errorDescription = '')
+{
+    $data = errorData('internal_server_error', $errorDescription);
+    return $response->withjson($data, 500);
+}
+
+/**
+ * 501 Not Implemented
+ */
+function code_501($response)
+{
+    $data = array(
+        'error' => 'not_implemented'
+    );
+    return $response->withJson($data, 501);
+}
+
+/**
+ * Gets new Access Token for User based on refresh token
+ *
+ * @param response $response
+ * @param string $refreshToken
+ * @return response
+ */
+function refreshTokenGrantType($response, $refreshToken)
+{
+    return code_501($response);
+}
 
 /**
  * Gets new Access Token for User based on Refresh Token
@@ -92,7 +167,7 @@ $app->post('/api/tokens/refresh', function ($request, $response) {
 });
 
 /**
- * Creates Token for User
+ * Returns Token for User
  *
  * @param User $user
  * @return object
