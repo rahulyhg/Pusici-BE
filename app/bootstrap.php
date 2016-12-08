@@ -24,6 +24,7 @@ $container['db'] = function ($container) use ($capsule) {
 };
 
 // require endpoints
-require_once ('Api/users.php');
-require_once ('Api/tokens.php');
-require_once ('Api/playground.php');
+require_once 'Api/status_codes.php';
+require_once 'Api/users.php';
+require_once 'Api/tokens.php';
+require_once 'Api/playground.php';

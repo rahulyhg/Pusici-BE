@@ -23,13 +23,17 @@ class ModelValidation extends Model
         }
     }
 
-    // Validates attributes
+    /**
+     * Validate attributes
+     */
     public function validate()
     {
         return $this->validator->validate($this->attributes);
     }
 
-    // Returns validation errors
+    /**
+     * Return validation errors
+     */
     public function errors()
     {
         return $this->validator->errors();

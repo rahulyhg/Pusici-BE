@@ -5,7 +5,7 @@ class Generator
 {
 
     /**
-     * Universally unique identifier
+     * Generate universally unique identifier
      *
      * @param bool $hyphens
      * @return string
@@ -35,7 +35,7 @@ class Generator
     }
 
     /**
-     * Globally unique identifier
+     * Generate globally unique identifier
      *
      * @param bool $hyphens
      * @return string
