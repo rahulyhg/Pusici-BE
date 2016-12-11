@@ -1,7 +1,7 @@
 .buildpath
 .project
+.settings/*
 composer.lock
 composer.phar
-app/config.php
-.settings/*
 vendor/*
+app/config.php

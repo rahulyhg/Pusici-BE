@@ -16,12 +16,19 @@ class User extends ModelValidation
         'email'
     ];
 
-    // Define relationship
-    public function token()
+    // Define one-to-one relationship
+    public function userData()
     {
         // The first argument is the name of the related model
         // The second argument is the foreign key (optional)
         // The third argument is the local_key (optional)
-        return $this->hasOne('App\Models\Token', 'user_id');
+        return $this->hasOne('App\Models\UserData', 'user_id');
+    }
+
+    // Define one-to-many relationship
+    public function tokens()
+    {
+        // related model, foreign key (optional)
+        return $this->hasMany('App\Models\Token', 'user_id');
     }
 }

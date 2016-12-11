@@ -1,21 +1,21 @@
 <?php
+namespace App\Api;
+
 use App\Helpers\Generator;
-use App\Models\Token;
 use App\Models\User;
+use App\Models\UserData;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 /**
- * Gets all Users
+ * Get all Users
  *
- * simplified query message parameters can be used
- * e.g. ?filter=first_name:=:John&orderby=last_name:asc
+ * - simplified query message parameters can be used (?filter=first_name:=:John&orderby=last_name:asc)
  *
- * 200 - returns array of users
- * 400 - Bad Request
+ * 200 - Return array of users
+ * 400 - database_error
  * 500 - Internal Server Error
  */
-$app->get('/api/users', function ($request, $response)
-{
+$app->get('/api/users', function ($request, $response) {
     // Get query message parameters
     $filter = $request->getQueryParam('filter', $default = null);
     $orderBy = $request->getQueryParam('orderby', $default = null);
@@ -23,8 +23,7 @@ $app->get('/api/users', function ($request, $response)
     // Using The Query Builder
     $builder = Capsule::table('users'); // all users
 
-    if (isset($filter))
-    {
+    if (isset($filter)) {
         $array = explode(':', $filter);
         $column = $array[0];
         $operator = isset($array[1]) ? $array[1] : '=';
@@ -33,8 +32,7 @@ $app->get('/api/users', function ($request, $response)
         $builder = $builder->where($column, $operator, $value); // sql where clause
     }
 
-    if (isset($orderBy))
-    {
+    if (isset($orderBy)) {
         $array = explode(':', $orderBy);
         $column = $array[0];
         $direction = isset($array[1]) ? $array[1] : 'asc'; // asc or desc
@@ -42,187 +40,152 @@ $app->get('/api/users', function ($request, $response)
         $builder = $builder->orderBy($column, $direction); // sql order by keyword
     }
 
-    try
-    {
+    try {
         $users = $builder->get(); // execute query
-    } catch (Illuminate\Database\QueryException $e)
-    {
-        $data = array (
-            'error' => $e->getMessage()
-        );
-        return $response->withJson($data, 400, JSON_UNESCAPED_UNICODE);
-    } catch (PDOException $e)
-    {
-        $data = array (
-            'error' => utf8_encode($e->getMessage())
-        );
-        return $response->withjson($data, 500);
+    } catch (\Illuminate\Database\QueryException $e) {
+        return code_400($response, 'database_error', $e->getMessage());
+    } catch (\PDOException $e) {
+        return code_500($response, $e->getMessage());
     }
 
-    return $response->withJson($users, 200, JSON_UNESCAPED_UNICODE);
+    return code_200($response, $users);
 });
 
 /**
- * Gets User with id
+ * Get User with id
  *
- * 200 - returns user
- * 404 - user id not found
+ * 200 - Return User
+ * 404 - user_not_found
  * 500 - Internal Server Error
  */
-$app->get('/api/users/{id}', function ($request, $response)
-{
+$app->get('/api/users/{id}', function ($request, $response) {
     $id = $request->getAttribute('id');
 
-    try
-    {
+    try {
         // Using The Eloquent ORM
         $user = User::find($id);
-    } catch (PDOException $e)
-    {
-        $data = array (
-            'error' => utf8_encode($e->getMessage())
-        );
-        return $response->withjson($data, 500);
+    } catch (\PDOException $e) {
+        return code_500($response, $e->getMessage());
     }
 
-    if (!isset($user))
-    {
-        $data = array (
-            'user' => "User with id '$id' not found."
-        );
-        return $response->withJson($data, 404, JSON_UNESCAPED_UNICODE);
+    if (! isset($user)) {
+        return code_404($response, 'user_not_found', "User with id '$id' not found.");
     }
 
-    return $response->withJson($user, 200, JSON_UNESCAPED_UNICODE);
+    return code_200($response, $user);
 });
 
 /**
- * Creates new User
+ * Create new User
  *
- * 201 - returns user id
- * 400 - Bad Request
+ * 201 - Return User id
+ * 400 - wrong_input, email_exist
  * 500 - Internal Server Error
  */
-$app->post('/api/users', function ($request, $response)
-{
+$app->post('/api/users', function ($request, $response) {
     $user = new User();
-    $user->id = Generator::guid();
-    // get request body parameters
+    // Get request body parameters
     $user->first_name = $request->getParsedBodyParam('first_name');
     $user->last_name = $request->getParsedBodyParam('last_name');
     $user->email = $request->getParsedBodyParam('email');
+    $userData = new UserData();
+    $userData->password = $request->getParsedBodyParam('password');
 
-    $token = new Token();
-    $token->user_id = $user->id;
-    $token->password = $request->getParsedBodyParam('password');
-
-    // validate User and Token model attributes
+    // Validate User and Password model attributes
     $isValid = $user->validate();
-    $isValid &= $token->validate();
+    $isValid &= $userData->validate();
 
-    if ($isValid)
-    {
-        try
-        {
+    if ($isValid) {
+        try {
+            // Ensure the User id is unique
+            do {
+                $user->id = Generator::guid();
+            } while (null !== User::find($user->id));
+            $userData->user_id = $user->id;
+            // Ensure the User email is unique
+            if (null !== User::where('email', '=', $user->email)->first()) {
+                return code_400($response, 'email_exist', "User with the email address '$user->email' already exists.");
+            }
+
             $user->save();
-            $token->password = md5($token->password); // temporary solution (md5 is not strong enough for storing passwords)
-            $token->save();
-        } catch (PDOException $e)
-        {
-            $data = array (
-                'error' => utf8_encode($e->getMessage())
-            );
-            return $response->withjson($data, 500);
+            // Temporary solution (md5 is not strong enough for storing passwords)
+            $userData->password = md5($userData->password);
+            $userData->save();
+        } catch (\PDOException $e) {
+            return code_500($response, $e->getMessage());
         }
-    } else
-    {
-        return $response->withJson(array_merge($user->errors(), $token->errors()), 400, JSON_UNESCAPED_UNICODE);
+    } else {
+        return code_400($response, 'wrong_input', array_merge($user->errors(), $userData->errors()));
     }
 
-    $data = array (
+    $data = array(
         'id' => $user->id
     );
-    return $response->withJson($data, 201, JSON_UNESCAPED_UNICODE);
+    return code_201($response, $data);
 });
 
 /**
- * Updates User with id
+ * Update User with id
  *
- * 204
- * 400 - Bad Request
- * 404 - Not Found
+ * 204 - User updated
+ * 400 - wrong_input, email_exist
+ * 404 - user_not_found
  * 500 - Internal Server Error
  */
-$app->put('/api/users/{id}', function ($request, $response)
-{
+$app->put('/api/users/{id}', function ($request, $response) {
     $id = $request->getAttribute('id');
 
-    try
-    {
-        $user = User::where('id', '=', "$id")->first();
+    try {
+        $user = User::where('id', '=', $id)->first();
 
-        if (isset($user))
-        {
+        if (isset($user)) {
+            $originalEmail = $user->email;
+
             $user->first_name = $request->getParsedBodyParam('first_name', $default = $user->first_name);
             $user->last_name = $request->getParsedBodyParam('last_name', $default = $user->last_name);
             $user->email = $request->getParsedBodyParam('email', $default = $user->email);
 
-            if ($user->validate())
-            {
+            if ($user->validate()) {
+                // Ensure the User email is unique
+                if ($originalEmail != $user->email && null !== User::where('email', '=', $user->email)->first()) {
+                    return code_400($response, 'email_exist', "User with the email address '$user->email' already exists.");
+                }
+
                 $user->save();
-            } else
-            {
-                return $response->withJson($user->errors(), 400, JSON_UNESCAPED_UNICODE);
+            } else {
+                return code_400($response, 'wrong_input', $user->errors());
             }
-        } else
-        {
-            $data = array (
-                'user' => "User with id '$id' not found."
-            );
-            return $response->withJson($data, 404, JSON_UNESCAPED_UNICODE);
+        } else {
+            return code_404($response, 'user_not_found', "User with id '$id' not found.");
         }
-    } catch (PDOException $e)
-    {
-        $data = array (
-            'error' => utf8_encode($e->getMessage())
-        );
-        return $response->withjson($data, 500);
+    } catch (\PDOException $e) {
+        return code_500($response, $e->getMessage());
     }
 
-    return $response->withJson(null, 204);
+    return code_204($response);
 });
 
 /**
- * Deletes User with id
+ * Delete User with id
  *
- * 204
- * 404
- * 500
+ * 204 - User deleted
+ * 404 - user_not_found
+ * 500 - Internal Server Error
  */
-$app->delete('/api/users/{id}', function ($request, $response)
-{
+$app->delete('/api/users/{id}', function ($request, $response) {
     $id = $request->getAttribute('id');
 
-    try
-    {
+    try {
         $user = User::find($id);
 
-        if (!isset($user))
-        {
-            $data = array (
-                'user' => "User with id '$id' not found."
-            );
-            return $response->withJson($data, 404, JSON_UNESCAPED_UNICODE);
+        if (! isset($user)) {
+            return code_404($response, 'user_not_found', "User with id '$id' not found.");
         }
 
         $user->delete();
-    } catch (PDOException $e)
-    {
-        $data = array (
-            'error' => utf8_encode($e->getMessage())
-        );
-        return $response->withjson($data, 500);
+    } catch (\PDOException $e) {
+        return code_500($response, $e->getMessage());
     }
 
-    return $response->withJson(null, 204);
+    return code_204($response);
 });

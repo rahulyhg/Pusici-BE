@@ -3,7 +3,7 @@ namespace App\Validation;
 
 use Respect\Validation\Validator as V;
 
-class TokenValidator extends ValidatorBase
+class UserDataValidator extends ValidatorBase
 {
 
     public function initRules()

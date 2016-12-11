@@ -16,7 +16,7 @@ class UserValidator extends ValidatorBase
         $this->rules['last_name'] = V::alphaLatin2()->noWhitespace()
             ->length(1, 20)
             ->setName('Last name');
-        $this->rules['email'] = V::email();
+        $this->rules['email'] = V::email()->length(null, 50);
     }
 
     public function initMessages()

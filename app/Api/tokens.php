@@ -1,6 +1,7 @@
 <?php
 namespace App\Api;
 
+use App\Models\RefreshToken;
 use App\Models\User;
 use Firebase\JWT\JWT;
 
@@ -68,29 +69,19 @@ class Tokens
     private static function passwordGrantType($response, $email, $password)
     {
         try {
-
             $user = User::where('email', '=', $email)->first();
 
             if ($user != null) {
-                if ($password == $user->token->password) {
-                    $token = self::prepareToken($user);
-                    $data = array(
-                        'access_token' => $token->access,
-                        'expires_in' => $token->accessExpire,
-                        'token_type' => 'Bearer',
-                        'refresh_token' => $token->refresh
-                    );
+                if ($password == $user->userData->password) {
+                    $tokenData = self::getTokenData($user);
+                    // Save the Refresh Token
+                    self::saveRefreshToken($user, $tokenData);
 
-                    // Store the Refresh Token
-                    $user->token->refresh_token = $token->refresh;
-                    $user->token->expire = date('Y-m-d H:i:s', $token->refreshExpire);
-                    $user->token->save();
-
-                    return code_200($response, $data);
+                    return code_200($response, self::formatTokenData($tokenData));
                 }
             }
         } catch (\PDOException $e) {
-            return code_500($response, utf8_encode($e->getMessage()));
+            return code_500($response, $e->getMessage());
         }
 
         return code_400($response, 'invalid_grant', 'Credentials are invalid.');
@@ -98,33 +89,49 @@ class Tokens
 
     private static function refreshTokenGrantType($response, $refreshToken)
     {
-        return code_501($response);
-        /*
-         * $app->post('/api/tokens/refresh', function ($request, $response) {
-         * $jwt = $request->getParsedBodyParam('refresh-token');
-         *
-         * if ($jwt != '') {
-         * try {
-         * $secretKey = 'myverysecretkey';
-         * $token = JWT::decode($jwt, $secretKey, array(
-         * 'HS512'
-         * ));
-         * print_r($token);
-         * exit();
-         * } catch (Exception $e) {
-         * echo '401';
-         * exit();
-         * }
-         * }
-         * });
-         */
+        try {
+            $token = RefreshToken::find($refreshToken);
+
+            if ($token != null) {
+
+                if ($token->used != null) {
+                    return code_400($response, 'invalid_grant', 'Refresh Token is already used.');
+                }
+
+                if (strtotime($token->expire) < time()) {
+                    return code_400($response, 'invalid_grant', 'Refresh Token is expired.');
+                }
+
+                $user = $token->user;
+                $tokenData = self::getTokenData($user);
+
+                // Mark the old Refresh Token as used
+                $token->used = date('Y-m-d H:i:s', time());
+                $token->save();
+
+                // Save the new Refresh Token
+                self::saveRefreshToken($user, $tokenData);
+
+                return code_200($response, self::formatTokenData($tokenData));
+            }
+        } catch (\PDOException $e) {
+            return code_500($response, $e->getMessage());
+        }
+
+        return code_400($response, 'invalid_grant', 'Refresh Token is invalid.');
     }
 
-    private static function prepareToken(User $user)
+    /**
+     * Return Access and Refresh Token data
+     */
+    private static function getTokenData(User $user)
     {
-        // Unique identifier for the token
-        // Base64 is not encryption. It's an encoding.
+        // Unique identifier for the Access Token
         $tokenId = base64_encode(mcrypt_create_iv(32));
+        // Ensure the Refresh Token is unique
+        do {
+            $refreshToken = base64_encode(mcrypt_create_iv(32));
+        } while (null !== RefreshToken::find($refreshToken));
 
         // Time when the token was generated and when will expire
         $issuedAt = time();
@@ -133,7 +140,7 @@ class Tokens
         $refreshExpire = $notBefore + self::$config->jwt->refreshExpire;
         $issuer = self::$config->jwt->serverName;
 
-        // Create the token as an array
+        // Create the jwt token as an array
         $token = [
             // Reserved Claims
             'jti' => $tokenId,
@@ -154,9 +161,33 @@ class Tokens
             // Encode the token array to a JWT string (The output string can be validated at http://jwt.io/)
             'access' => JWT::encode($token, self::$config->jwt->secretKey, self::$config->jwt->algorithm),
             'accessExpire' => $accessExpire,
-            'refresh' => $tokenId,
+            'refresh' => $refreshToken,
             'refreshExpire' => $refreshExpire
         );
+    }
+
+    /**
+     * Prepare Token Data for response output
+     */
+    private static function formatTokenData($tokenData)
+    {
+        $result = array(
+            'access_token' => $tokenData->access,
+            'expires_in' => $tokenData->accessExpire,
+            'token_type' => 'Bearer',
+            'refresh_token' => $tokenData->refresh
+        );
+
+        return $result;
+    }
+
+    private static function saveRefreshToken($user, $tokenData)
+    {
+        $token = new RefreshToken();
+        $token->id = $tokenData->refresh;
+        $token->user_id = $user->id;
+        $token->expire = date('Y-m-d H:i:s', $tokenData->refreshExpire);
+        $token->save();
     }
 }
 

@@ -1,21 +1,17 @@
 <?php
 namespace App\Models;
 
-class Token extends ModelValidation
+class UserData extends ModelValidation
 {
-
+    // Disable auto-incrementing of primary key (id is not an integer type)
     public $incrementing = false;
-
-    public $timestamps = false;
-
-    protected $table = 'tokens';
-    // Explicitly overriding default value 'id'
+    // Link model to db table explicitly
+    protected $table = 'user_data';
+    // Explicitly override default value 'id'
     protected $primaryKey = 'user_id';
 
     protected $fillable = [
-        'password',
-        'refresh_token',
-        'expire'
+        'password'
     ];
 
     // Define relationship
