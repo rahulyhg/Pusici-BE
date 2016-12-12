@@ -1,1 +1,194 @@
-<p>Hello World!</p>
+<html>
+  <head>
+    <title>Junior | Pusíci</title>
+    <meta charset="utf-8">
+
+    <style>
+      html, body {
+          height: 100%;
+      }
+
+      body {
+          margin: 0;
+          min-width: 800px;
+          text-align: center;
+          background: #ffb3cc; //#00ECB9;
+          font-family: sans-serif;
+          font-weight: 100;
+      }
+
+      .container {
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+      }
+
+      h1 {
+          color: white;
+          font-weight: 100;
+          font-size: 80px;
+          margin: 40px 0px 20px;
+      }
+
+      h2 {
+          text-align: center;
+          background: white;
+          margin: 0px;
+          margin-top: 20px;
+          padding: 20px;
+          width: 400px;
+          border: 5px solid #ff6699;
+          border-radius: 15px 15px 0px 0px;
+      }
+
+      #clockdiv {
+          font-family: sans-serif;
+          color: #fff;
+          display: inline-block;
+          font-weight: 100;
+          text-align: center;
+          font-size: 80px;
+      }
+
+      .text {
+          margin: 0px;
+          margin-bottom: 20px;
+          padding: 20px;
+          text-align: justify;
+          width: 400px;
+          border: 5px solid #ff6699;
+          border-top: 0px;
+          border-radius: 0px 0px 15px 15px;
+      }
+
+      #clockdiv > div {
+          padding: 10px;
+          border-radius: 3px;
+          background: #ff6699; //#00BF96;
+          display: inline-block;
+      }
+
+      #clockdiv div > span {
+          padding: 15px;
+          border-radius: 3px;
+          background: #990033; //#00816A;
+          display: inline-block;
+      }
+
+      .smalltext {
+          padding-top: 5px;
+          font-size: 30px;
+      }
+
+      .date {
+          color: #990033; //#396;
+          font-size: 30px;
+      }
+
+      img {
+          border: 10px solid white;
+          border-radius: 15px;
+          margin: 20px;
+      }
+
+      figure {
+          width: 500px;
+          float: left;
+          margin: 0;
+          padding: 0;
+      }
+
+      figcaption {
+          text-align: center;
+          font-size: 24px;
+          font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div id="clockdiv">
+        <h1>Narození Pusíka Elišky</h1>
+        <div>
+          <span class="days"></span>
+          <div class="smalltext">Dny</div>
+        </div>
+        <div>
+          <span class="hours"></span>
+          <div class="smalltext">Hodiny</div>
+        </div>
+        <div>
+          <span class="minutes"></span>
+          <div class="smalltext">Minuty</div>
+        </div>
+        <div>
+          <span class="seconds"></span>
+          <div class="smalltext">Sekundy</div>
+        </div>
+        <p class="date">29. března 2017</p>
+      </div>
+      <div style="margin-left: 100;margin-right: 100;">
+        <h2>20. září 2016</h2>
+        <p class="text">Ahoj, jmenuji se Eliška. Nezlobím a pěkně spinkám v bříšku. Je mi 12 týdnů a 5 dní a měřím 6,42 cm.</p>
+        <figure>
+          <img src="./data/20-09-2016-head.jpg" alt="20-09-2016-head" style="width:411px;height:293px;">
+          <figcaption>Hlavička</figcaption>
+        </figure>
+        <figure>
+          <img src="./data/20-09-2016-whole_body.jpg" alt="20-09-2016-whole_body" style="width:411px;height:293px;">
+          <figcaption>Tělíčko</figcaption>
+        </figure>
+        <figure>
+          <img src="./data/20-09-2016-head_with_fingers.jpg" alt="20-09-2016-head_with_fingers" style="width:411px;height:293px;">
+          <figcaption>Hlavička a prstíky</figcaption>
+        </figure>
+      </div>
+    </div>
+  </body>
+  <script>
+    function getTimeRemaining(endtime) {
+      var t = Date.parse(endtime) - Date.parse(new Date());
+      var seconds = Math.floor((t / 1000) % 60);
+      var minutes = Math.floor((t / 1000 / 60) % 60);
+      var hours = Math.floor((t / (1000 * 60 * 60)) % 24);
+      var days = Math.floor(t / (1000 * 60 * 60 * 24));
+      return {
+        'total': t,
+        'days': days,
+        'hours': hours,
+        'minutes': minutes,
+        'seconds': seconds
+      };
+    }
+
+    function initializeClock(id, endtime) {
+      var clock = document.getElementById(id);
+      var daysSpan = clock.querySelector('.days');
+      var hoursSpan = clock.querySelector('.hours');
+      var minutesSpan = clock.querySelector('.minutes');
+      var secondsSpan = clock.querySelector('.seconds');
+
+      function updateClock() {
+        var t = getTimeRemaining(endtime);
+
+        daysSpan.innerHTML = t.days;
+        hoursSpan.innerHTML = ('0' + t.hours).slice(-2);
+        minutesSpan.innerHTML = ('0' + t.minutes).slice(-2);
+        secondsSpan.innerHTML = ('0' + t.seconds).slice(-2);
+
+        if (t.total <= 0) {
+          clearInterval(timeinterval);
+        }
+      }
+
+      updateClock();
+      var timeinterval = setInterval(updateClock, 1000);
+    }
+
+    var deadline = 'March 29 2017 00:00:00';
+    //var deadline = 'September 25 2016 04:00:00 GMT+0100';
+    initializeClock('clockdiv', deadline);
+  </script>
+</html>
+<!-- https://www.sitepoint.com/build-javascript-countdown-timer-no-dependencies/ -->

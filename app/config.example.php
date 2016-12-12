@@ -25,8 +25,10 @@ return (object) array(
         'secretKey' => '',
         // Algorithm used to sign the token
         'algorithm' => 'HS512',
-        // Expiration time in seconds
-        'expire' => 1800
+        // Expiration time in seconds (30 min.)
+        'expire' => 1800,
+        // Expiration time in seconds (1 week)
+        'refreshExpire' => 604800
     ),
     // Basic access authentication
     'ba' => (object) array(

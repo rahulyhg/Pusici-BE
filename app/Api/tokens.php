@@ -46,6 +46,15 @@ class Tokens
         $app->post('/api/tokens', function ($request, $response) {
             return self::getAccessToken($request, $response);
         });
+
+        /**
+         * Return decoded Access Token
+         * 200 - Return Access Token data
+         * 400 - jwt_error (unexpected value, expired, invalid signature)
+         */
+        $app->post('/api/tokens/decode', function ($request, $response) {
+            return self::decodeAccessToken($request, $response);
+        });
     }
 
     private static function getAccessToken($request, $response)
@@ -105,7 +114,7 @@ class Tokens
                 $user = $token->user;
                 $tokenData = self::getTokenData($user);
 
-                // Mark the old Refresh Token as used
+                // Mark the current Refresh Token as used
                 $token->used = date('Y-m-d H:i:s', time());
                 $token->save();
 
@@ -157,9 +166,11 @@ class Tokens
             ]
         ];
 
+        $secretKey = base64_decode(self::$config->jwt->secretKey);
+
         return (object) array(
             // Encode the token array to a JWT string (The output string can be validated at http://jwt.io/)
-            'access' => JWT::encode($token, self::$config->jwt->secretKey, self::$config->jwt->algorithm),
+            'access' => JWT::encode($token, $secretKey, self::$config->jwt->algorithm),
             'accessExpire' => $accessExpire,
             'refresh' => $refreshToken,
             'refreshExpire' => $refreshExpire
@@ -188,6 +199,24 @@ class Tokens
         $token->user_id = $user->id;
         $token->expire = date('Y-m-d H:i:s', $tokenData->refreshExpire);
         $token->save();
+    }
+
+    private static function decodeAccessToken($request, $response)
+    {
+        $token = $request->getParsedBodyParam('access_token');
+
+        $secretKey = base64_decode(self::$config->jwt->secretKey);
+        $algorithm = self::$config->jwt->algorithm;
+
+        try {
+            $data = JWT::decode($token, $secretKey, array(
+                $algorithm
+            ));
+        } catch (\Exception $e) {
+            return code_400($response, 'jwt_error', $e->getMessage());
+        }
+
+        return code_200($response, $data);
     }
 }
 

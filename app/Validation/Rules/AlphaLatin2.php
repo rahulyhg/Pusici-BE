@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Validation\Rules;
 
 use Respect\Validation\Rules\AbstractRule;
