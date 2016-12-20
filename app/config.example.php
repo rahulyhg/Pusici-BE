@@ -18,7 +18,7 @@ return (object) array(
         'collation' => 'utf8_unicode_ci',
         'prefix' => ''
     ),
-    // JSON Web Token (Bearer)
+    // JSON Web Token Authentication
     'jwt' => (object) array(
         'serverName' => 'example.com',
         // Key for signing the JWT; generated with base64_encode(openssl_random_pseudo_bytes(64))
@@ -26,13 +26,15 @@ return (object) array(
         // Algorithm used to sign the token
         'algorithm' => 'HS512',
         // Expiration time in seconds (30 min.)
-        'expire' => 1800,
+        'accessExpire' => 1800,
         // Expiration time in seconds (1 week)
         'refreshExpire' => 604800
     ),
-    // Basic access authentication
+    // Basic Authentication
     'ba' => (object) array(
-        'secretKey' => ''
+        'user' => '',
+        // password_hash('password', PASSWORD_BCRYPT)
+        'password' => ''
     ),
     'info' => array(
         'appName' => 'Example',

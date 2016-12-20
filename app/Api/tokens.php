@@ -65,7 +65,7 @@ class Tokens
         switch ($grantType) {
             case 'password':
                 $email = $request->getParsedBodyParam('email');
-                $password = md5($request->getParsedBodyParam('password'));
+                $password = $request->getParsedBodyParam('password');
                 return self::passwordGrantType($response, $email, $password);
             case 'refresh_token':
                 $refreshToken = $request->getParsedBodyParam('refresh_token');
@@ -81,7 +81,7 @@ class Tokens
             $user = User::where('email', '=', $email)->first();
 
             if ($user != null) {
-                if ($password == $user->userData->password) {
+                if (password_verify($password, $user->userData->password)) {
                     $tokenData = self::getTokenData($user);
                     // Save the Refresh Token
                     self::saveRefreshToken($user, $tokenData);

@@ -35,6 +35,13 @@ php composer.phar require respect/validation
 php composer.phar require firebase/php-jwt
   ```
 
+6. Install Basic and JWT Authentication Middleware
+
+  ```
+php composer.phar require tuupola/slim-basic-auth
+php composer.phar require tuupola/slim-jwt-auth
+  ```
+
 ## Composer commands
 
 ```
@@ -50,13 +57,21 @@ php composer.phar show
 
 ## Links
 
+### Documentation
+
 - [Composer home](https://getcomposer.org/)
 - [Composer CLI](https://getcomposer.org/doc/03-cli.md)
 - [Slim framework home](http://www.slimframework.com/)
 - [Illuminate database docs](https://laravel.com/docs/5.3/database)
 - [Illuminate database API](https://laravel.com/api/5.3/Illuminate/Database.html)
 - [ORM in Laravel tutorial](https://scotch.io/tutorials/a-guide-to-using-eloquent-orm-in-laravel)
-- [Respect Validation GitHub](https://github.com/Respect/Validation)
 - [Respect Validation tutorial](https://www.sitepoint.com/validating-your-data-with-respect-validation/)
 - [JWT tutorial](https://www.sitepoint.com/php-authorization-jwt-json-web-tokens/)
+- [JWT Authentication Middleware](https://www.appelsiini.net/projects/slim-jwt-auth)
 - [HTTP status codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
+
+### GitHub
+
+- [Respect Validation](https://github.com/Respect/Validation)
+- [PSR-7 Basic Auth Middleware](https://github.com/tuupola/slim-basic-auth)
+- [PSR-7 JWT Authentication Middleware](https://github.com/tuupola/slim-jwt-auth)

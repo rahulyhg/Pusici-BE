@@ -35,9 +35,18 @@ function code_400($response, $error, $errorDescription = '')
 }
 
 /**
+ * 401 Unauthorized
+ */
+function code_401($response, $error, $errorDescription = '')
+{
+    $data = errorData($error, $errorDescription);
+    return $response->withJson($data, 401, JSON_UNESCAPED_UNICODE);
+}
+
+/**
  * 404 Not Found
  */
-function code_404($response, $error, $errorDescription)
+function code_404($response, $error, $errorDescription = '')
 {
     $data = errorData($error, $errorDescription);
     return $response->withJson($data, 404, JSON_UNESCAPED_UNICODE);
@@ -60,6 +69,15 @@ function code_501($response)
 {
     $data = errorData('not_implemented', '');
     return $response->withJson($data, 501);
+}
+
+/**
+ * Return error
+ */
+function error($response, $error, $errorDescription = '')
+{
+    $data = errorData($error, $errorDescription);
+    return $response->withHeader('Content-Type', 'application/json')->write(json_encode($data, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT));
 }
 
 /**

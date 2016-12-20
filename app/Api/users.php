@@ -108,8 +108,8 @@ $app->post('/api/users', function ($request, $response) {
             }
 
             $user->save();
-            // Temporary solution (md5 is not strong enough for storing passwords)
-            $userData->password = md5($userData->password);
+            // hash password
+            $userData->password = password_hash($userData->password, PASSWORD_BCRYPT);
             $userData->save();
         } catch (\PDOException $e) {
             return code_500($response, $e->getMessage());
