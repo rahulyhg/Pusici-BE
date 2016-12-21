@@ -3,4 +3,12 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 
-RewriteRule ^ app.php [QSA,L]
+# [QSA] - query string append
+
+RewriteRule ^ app.php [QSA]
+
+# Tell the Apache Web server to pass the encrypted username and password to PHP in a variable named HTTP_AUTHORIZATION
+# In some cases server adds REDIRECT_ prefix to environment name $_SERVER['REDIRECT_HTTP_AUTHORIZATION']
+# [L] - last rule
+
+RewriteRule .* - [env=HTTP_AUTHORIZATION:%{HTTP:Authorization},L]
