@@ -24,7 +24,6 @@ use Firebase\JWT\JWT;
  */
 class Tokens
 {
-
     private static $config;
 
     /**
@@ -32,7 +31,7 @@ class Tokens
      *
      * @param \Slim\App $app
      */
-    static function register($app, $config)
+    public static function register($app, $config)
     {
         self::$config = $config;
 
@@ -83,6 +82,7 @@ class Tokens
             if ($user != null) {
                 if (password_verify($password, $user->userData->password)) {
                     $tokenData = self::getTokenData($user);
+
                     // Save the Refresh Token
                     self::saveRefreshToken($user, $tokenData);
 
@@ -102,7 +102,6 @@ class Tokens
             $token = RefreshToken::find($refreshToken);
 
             if ($token != null) {
-
                 if ($token->used != null) {
                     return code_400($response, 'invalid_grant', 'Refresh Token is already used.');
                 }
@@ -149,6 +148,11 @@ class Tokens
         $refreshExpire = $notBefore + self::$config->jwt->refreshExpire;
         $issuer = self::$config->jwt->serverName;
 
+        $permissions = [];
+        foreach ($user->permissions as $item) {
+            $permissions[] = $item->permission;
+        }
+
         // Create the jwt token as an array
         $token = [
             // Reserved Claims
@@ -162,7 +166,7 @@ class Tokens
                 'first_name' => $user->first_name,
                 'last_name' => $user->last_name,
                 'email' => $user->email,
-                'permissions' => []
+                'permissions' => $permissions
             ]
         ];
 

@@ -44,6 +44,15 @@ function code_401($response, $error, $errorDescription = '')
 }
 
 /**
+ * 403 Forbidden
+ */
+function code_403($response)
+{
+    $data = errorData('access_denied', 'You don\'t have permission.');
+    return $response->withJson($data, 403);
+}
+
+/**
  * 404 Not Found
  */
 function code_404($response, $error, $errorDescription = '')
@@ -86,7 +95,8 @@ function error($response, $error, $errorDescription = '')
 function errorData(string $error, $errorDescription)
 {
     $data['error'] = $error;
-    if ($errorDescription != '')
+    if ($errorDescription != '') {
         $data['error_description'] = $errorDescription;
+    }
     return $data;
 }

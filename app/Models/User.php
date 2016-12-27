@@ -31,4 +31,9 @@ class User extends ModelValidation
         // related model, foreign key (optional)
         return $this->hasMany('App\Models\Token', 'user_id');
     }
+
+    public function permissions()
+    {
+        return $this->hasMany('App\Models\UserPermissions', 'user_id');
+    }
 }

@@ -3,7 +3,7 @@ require '../vendor/autoload.php';
 require 'Api/status_codes.php';
 
 // Load configuration
-$config = require ('config.php');
+$config = require('config.php');
 
 // Configure the Slim application
 $app = new \Slim\App([
@@ -56,11 +56,6 @@ $app->add(new \Slim\Middleware\HttpBasicAuthentication([
         return \App\Api\error($response, 'authentication_failed', $arguments['message']);
     }
 ]));
-
-// Set the default JWT value
-$container['jwt'] = function ($container) {
-    return new StdClass();
-};
 
 // Initialize database
 $capsule = new \Illuminate\Database\Capsule\Manager();

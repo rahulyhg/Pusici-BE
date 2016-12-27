@@ -7,6 +7,10 @@ use App\Models\UserData;
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 /**
+ * Each endpoint is protected by Permissions middleware
+ */
+
+/**
  * Get all Users
  *
  * - simplified query message parameters can be used (?filter=first_name:=:John&orderby=last_name:asc)
@@ -49,7 +53,7 @@ $app->get('/api/users', function ($request, $response) {
     }
 
     return code_200($response, $users);
-});
+})->add(new \App\Middleware\Permissions($container, ['users', 'users-read']));
 
 /**
  * Get User with id
@@ -73,7 +77,7 @@ $app->get('/api/users/{id}', function ($request, $response) {
     }
 
     return code_200($response, $user);
-});
+})->add(new \App\Middleware\Permissions($container, ['users', 'users-read']));
 
 /**
  * Create new User
@@ -122,7 +126,7 @@ $app->post('/api/users', function ($request, $response) {
         'id' => $user->id
     );
     return code_201($response, $data);
-});
+})->add(new \App\Middleware\Permissions($container, ['users']));
 
 /**
  * Update User with id
@@ -163,7 +167,7 @@ $app->put('/api/users/{id}', function ($request, $response) {
     }
 
     return code_204($response);
-});
+})->add(new \App\Middleware\Permissions($container, ['users']));
 
 /**
  * Delete User with id
@@ -188,4 +192,4 @@ $app->delete('/api/users/{id}', function ($request, $response) {
     }
 
     return code_204($response);
-});
+})->add(new \App\Middleware\Permissions($container, ['users']));
