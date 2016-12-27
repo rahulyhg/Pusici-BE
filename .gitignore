@@ -3,3 +3,7 @@ composer.phar
 vendor/*
 app/config.php
 www/data
+www/node_modules
+www/typings
+www/app/*.js
+www/app/*.map
