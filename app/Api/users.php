@@ -59,6 +59,7 @@ $app->get('/api/users', function ($request, $response) {
 /**
  * Get User with id
  *
+ * - required attribute 'id'
  * - required permission: 'users' or 'users-read'
  *
  * 200 - Return User
@@ -110,6 +111,7 @@ $app->get('/api/users/myself/profile', function ($request, $response) {
 /**
  * Create new User
  *
+ * - required body parameters: 'first_name', 'last_name', 'email', 'password'
  * - required permission: 'users'
  *
  * 201 - Return User id
@@ -161,6 +163,8 @@ $app->post('/api/users', function ($request, $response) {
 /**
  * Update User with id
  *
+ * - required attribute 'id'
+ * - optional body parameters: 'first_name', 'last_name', 'email'
  * - required permission: 'users'
  *
  * 204 - User updated
@@ -202,7 +206,9 @@ $app->put('/api/users/{id}', function ($request, $response) {
 })->add(new \App\Middleware\Permissions($container, ['users']));
 
 /**
- * Change password for logged-in User
+ * Change logged-in User password
+ *
+ * - required body parameters: 'old_password', 'new_password'
  *
  * 204 - password successfully changed
  * 400 - jwt_not_found, user_not_found, password_mismatched, wrong_input
@@ -246,6 +252,7 @@ $app->put('/api/users/myself/password-change', function ($request, $response) {
 /**
  * Delete User with id
  *
+ * - required attribute 'id'
  * - required permission: 'users'
  *
  * 204 - User deleted
