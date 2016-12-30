@@ -31,7 +31,8 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
         '/api'
     ],
     'passthrough' => [
-        '/api/tokens'
+        '/api/tokens',
+        '/api/info'
     ],
     'secret' => base64_decode($config->jwt->secretKey),
     'callback' => function ($request, $response, $arguments) use ($container) {
@@ -71,4 +72,5 @@ $container['db'] = function ($container) use ($capsule) {
 // Register endpoints
 require 'Api/users.php';
 require 'Api/tokens.php';
+require 'Api/info.php';
 require 'Api/playground.php';

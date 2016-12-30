@@ -37,7 +37,8 @@ return (object) array(
         'password' => ''
     ),
     'info' => array(
-        'appName' => 'Example',
-        'appURL' => 'http://www.example.com/'
+        'name' => 'Example',
+        'url' => 'www.example.com',
+        'version' => '1.0'
     )
 );

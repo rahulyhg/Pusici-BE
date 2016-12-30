@@ -214,7 +214,7 @@ $app->put('/api/users/{id}', function ($request, $response) {
  * 400 - jwt_not_found, user_not_found, password_mismatched, wrong_input
  * 500 - Internal Server Error
  */
-$app->put('/api/users/myself/password-change', function ($request, $response) {
+$app->put('/api/users/myself/change-password', function ($request, $response) {
     $oldPassword = $request->getParsedBodyParam('old_password');
     $newPassword = $request->getParsedBodyParam('new_password');
 
