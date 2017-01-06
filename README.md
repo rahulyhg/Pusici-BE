@@ -60,6 +60,7 @@ php composer.phar show
 ### Documentation
 
 - [Composer home](https://getcomposer.org/)
+- [Composer Basic usage](https://getcomposer.org/doc/01-basic-usage.md)
 - [Composer CLI](https://getcomposer.org/doc/03-cli.md)
 - [Slim framework home](http://www.slimframework.com/)
 - [Illuminate database docs](https://laravel.com/docs/5.3/database)
