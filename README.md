@@ -61,6 +61,7 @@ php composer.phar show
 DocumentRoot "C:/Pusici-BE/www"
 <Directory "C:/Pusici-BE/www">
 ```
+- Set Windows System Path C:\xampp\php\
 
 ## Links
 
