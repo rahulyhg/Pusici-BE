@@ -55,6 +55,13 @@ php composer.phar dump-autoload -o
 php composer.phar show
 ```
 
+## XAMPP configuration
+- set the DocumentRoot directory in Config -> Apache httpd.conf file
+```
+DocumentRoot "C:/Pusici-BE/www"
+<Directory "C:/Pusici-BE/www">
+```
+
 ## Links
 
 ### Documentation
