@@ -32,7 +32,8 @@ $app->add(new \Slim\Middleware\JwtAuthentication([
     ],
     'passthrough' => [
         '/api/tokens',
-        '/api/info'
+        '/api/info',
+        '/api/playground'
     ],
     'secret' => base64_decode($config->jwt->secretKey),
     'callback' => function ($request, $response, $arguments) use ($container) {
